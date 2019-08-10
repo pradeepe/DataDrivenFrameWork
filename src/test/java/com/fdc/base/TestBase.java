@@ -8,6 +8,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
@@ -55,13 +57,40 @@ public class TestBase {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
-			if (config.getProperty("browser").equals("chrome")) {
-				
-				System.setProperty("webdriver.chrome.driver", "C:\\ws\\DataDrivenFramework\\src\\test\\resources\\executables\\chromedriver.exe");
+					
+			switch (config.getProperty("browser")) {
+			case "chrome":
+				System.setProperty("webdriver.chrome.driver",
+						"C:\\ws\\DataDrivenFramework\\src\\test\\resources\\executables\\chromedriver.exe");
 				driver = new ChromeDriver();
-				
+				System.out.println("chrome");
+				break;
+
+			case "IE":
+				System.setProperty("webdriver.IE.driver",
+						"C:\\ws\\DataDrivenFramework\\src\\test\\resources\\executables\\IEDriverServer.exe");
+				driver = new InternetExplorerDriver();
+				System.out.println("IE");
+				break;
+
+			case "FireFox":
+				System.setProperty("webdriver.gecko.driver",
+						"C:\\ws\\DataDrivenFramework\\src\\test\\resources\\executables\\geckodriver.exe");
+				driver = new FirefoxDriver();
+				System.out.println("FireFox");
+				break;
+
+			default:
+				System.setProperty("webdriver.chrome.driver",
+						"C:\\ws\\DataDrivenFramework\\src\\test\\resources\\executables\\chromedriver.exe");
+				driver = new ChromeDriver();
+				System.out.println("chrome - default ");
+				break;
 			}
+			
+			
+			
+			
 			
 			System.out.println(config.getProperty("testsiteurl"));
 			driver.get(config.getProperty("testsiteurl"));
