@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -18,7 +19,7 @@ public class TestBase {
 	/*
 	 * Properties
 	 * WebDriver
-	 * Logs
+	 * Logs - Log4j jar, Application.log and Selenium.log Log4j.properties file, Logger class
 	 * ExtentReports
 	 * DB
 	 * Excel
@@ -30,6 +31,8 @@ public class TestBase {
 	public static Properties config = new Properties();
 	public static Properties OR = new Properties();
 	public static FileInputStream fis;
+	
+	public static Logger log = Logger.getLogger("devpinoyLogger");
 	
 	@BeforeSuite
 	public void setUp() {
@@ -43,6 +46,8 @@ public class TestBase {
 			}
 			try {
 				config.load(fis);
+				System.out.println("Config file loaded !!! ");
+				log.debug("Config file loaded !!!");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -54,6 +59,8 @@ public class TestBase {
 			}
 			try {
 				OR.load(fis);
+				System.out.println("OR file loaded !!! ");
+				log.debug("OR file loaded !!! ");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -64,27 +71,31 @@ public class TestBase {
 						"C:\\ws\\DataDrivenFramework\\src\\test\\resources\\executables\\chromedriver.exe");
 				driver = new ChromeDriver();
 				System.out.println("chrome");
+				log.debug("Chrome Launched !!! ");
 				break;
 
 			case "IE":
 				System.setProperty("webdriver.IE.driver",
 						"C:\\ws\\DataDrivenFramework\\src\\test\\resources\\executables\\IEDriverServer.exe");
 				driver = new InternetExplorerDriver();
-				System.out.println("IE");
+				//System.out.println("IE");
+				log.debug("IE Launched !!! ");
 				break;
 
 			case "FireFox":
 				System.setProperty("webdriver.gecko.driver",
 						"C:\\ws\\DataDrivenFramework\\src\\test\\resources\\executables\\geckodriver.exe");
 				driver = new FirefoxDriver();
-				System.out.println("FireFox");
+				//System.out.println("FireFox");
+				log.debug("FireFox Launched !!! ");
 				break;
 
 			default:
 				System.setProperty("webdriver.chrome.driver",
 						"C:\\ws\\DataDrivenFramework\\src\\test\\resources\\executables\\chromedriver.exe");
 				driver = new ChromeDriver();
-				System.out.println("chrome - default ");
+				//System.out.println("chrome - default ");
+				log.debug("Chrome Launched !!! ");
 				break;
 			}
 			
@@ -94,6 +105,7 @@ public class TestBase {
 			
 			System.out.println(config.getProperty("testsiteurl"));
 			driver.get(config.getProperty("testsiteurl"));
+			log.debug("Navigated to Url: " + config.getProperty("testsiteurl"));
 			driver.manage().window().maximize();
 			driver.manage().timeouts().implicitlyWait(Integer.parseInt(config.getProperty("implicit.wait")), TimeUnit.SECONDS);
 			
@@ -103,10 +115,12 @@ public class TestBase {
 	}
 
 	@AfterSuite
-	public void tearDown() {
+	public void tearDown() throws InterruptedException {
 		
 		if (driver != null) {
+			Thread.sleep(3000);
 			driver.quit();
 		}
+		log.debug("Test Execution completed ");
 	}
 }
